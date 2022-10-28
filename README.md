@@ -18,6 +18,10 @@ func main(args []string) {
   if err != nil {
     fmt.Printf("Error renaming to file to final name: %v", err)
   }
+
+  // OR
+
+  err = atomicfile.WriteFile("path/to/final.txt", 0644, []byte("my content"))
 }
 ```
 

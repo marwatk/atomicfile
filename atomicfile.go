@@ -14,6 +14,8 @@ type AtomicFile struct {
 	*os.File
 }
 
+// Abort closes and deletes the temporary file without renaming to the
+// final file name.
 func (f AtomicFile) Abort() error {
 	err1 := f.File.Close()
 	err2 := os.Remove(f.File.Name())
@@ -64,8 +66,8 @@ func ReplaceFile(srcPath, destPath string) error {
 
 // WriteFile writes to a temp file and atomically renames it
 // to path if successful. On error path is unmodified.
-func WriteFile(path string, content []byte) error {
-	f, err := New(path, 0644)
+func WriteFile(path string, mode os.FileMode, content []byte) error {
+	f, err := New(path, mode)
 	if err != nil {
 		return fmt.Errorf("creating temp file for atomicfile: %w", err)
 	}
