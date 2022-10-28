@@ -73,6 +73,7 @@ func WriteFile(path string, mode os.FileMode, content []byte) error {
 	}
 	_, err = f.Write(content)
 	if err != nil {
+		_ = f.Abort()
 		return fmt.Errorf("writing to temp file for atomicfile: %w", err)
 	}
 	return f.Close()
