@@ -61,3 +61,21 @@ func TestReplace(t *testing.T) {
 	require.NoError(t, err, "read dest")
 	require.Equal(t, "I'm the source", string(content))
 }
+
+func TestWriteFile(t *testing.T) {
+	dir, err := os.MkdirTemp("", "")
+	require.NoError(t, err, "create temp dir")
+	defer func() { _ = os.RemoveAll(dir) }()
+	existingDest := filepath.Join(dir, "dest.txt")
+	err = os.WriteFile(existingDest, []byte("existing"), 0644)
+	require.NoError(t, err, "write dest")
+	err = WriteFile(existingDest, []byte("new content"))
+	require.NoError(t, err, "WriteFile")
+	content, err := os.ReadFile(existingDest)
+	require.NoError(t, err, "read")
+	require.Equal(t, "new content", string(content), "content")
+	entries, err := os.ReadDir(dir)
+	require.NoError(t, err, "read dir")
+	require.Equal(t, 1, len(entries))
+	require.Equal(t, "dest.txt", filepath.Base(entries[0].Name()))
+}
